@@ -1,6 +1,10 @@
 ﻿using Microsoft.Owin.Hosting;
 using Owin;
 using System;
+using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Topshelf;
 
@@ -47,6 +51,7 @@ namespace OwinHelloWorld
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
                 );
+            config.MessageHandlers.Add(new StreamReadingDelegatingHandler());
 
             appBuilder.Use<OwinContextMiddleware>();
             appBuilder.UseWebApi(config);
@@ -60,7 +65,31 @@ namespace OwinHelloWorld
             const string messageKey = "message";
             const string messageValue = "Hello, World!";
             OwinCallContext.Current.Set(messageKey, messageValue);
+            
             return OwinCallContext.Current.Get<string>(messageKey);
+        }
+
+        public string Post([FromBody]HelloWorldModel model)
+        {
+            return model.Message;
+        }
+
+        public class HelloWorldModel
+        {
+            public string Message { get; set; }
+        }
+    }
+
+    public class StreamReadingDelegatingHandler : DelegatingHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var stream = request.Content.ReadAsStreamAsync().Result;
+            var content = new StreamReader(stream).ReadToEnd();
+            stream.Seek(0, SeekOrigin.Begin);
+            Console.WriteLine("Content is " + content);
+            
+            return base.SendAsync(request, cancellationToken);
         }
     }
 }
