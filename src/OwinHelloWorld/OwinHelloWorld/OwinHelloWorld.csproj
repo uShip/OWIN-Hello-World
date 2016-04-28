@@ -79,10 +79,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HelloWorldController.cs" />
     <Compile Include="OwinContextMiddleware.cs" />
+    <Compile Include="OwinService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestBufferingMiddleware.cs" />
+    <Compile Include="StartOwin.cs" />
+    <Compile Include="StreamReadingDelegatingHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
