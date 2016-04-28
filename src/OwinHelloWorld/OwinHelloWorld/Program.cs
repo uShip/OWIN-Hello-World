@@ -54,6 +54,7 @@ namespace OwinHelloWorld
             config.MessageHandlers.Add(new StreamReadingDelegatingHandler());
 
             appBuilder.Use<OwinContextMiddleware>();
+            appBuilder.Use<RequestBufferingMiddleware>();
             appBuilder.UseWebApi(config);
         }
     }
