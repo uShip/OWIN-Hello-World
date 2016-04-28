@@ -48,6 +48,7 @@ namespace OwinHelloWorld
                 defaults: new { id = RouteParameter.Optional }
                 );
 
+            appBuilder.Use<OwinContextMiddleware>();
             appBuilder.UseWebApi(config);
         }
     }
@@ -56,7 +57,10 @@ namespace OwinHelloWorld
     {
         public string Get()
         {
-            return "Hello, World!";
+            const string messageKey = "message";
+            const string messageValue = "Hello, World!";
+            OwinCallContext.Current.Set(messageKey, messageValue);
+            return OwinCallContext.Current.Get<string>(messageKey);
         }
     }
 }
